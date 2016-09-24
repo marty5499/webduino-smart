@@ -1,0 +1,39 @@
+<html>
+
+<head>
+    <title>Example 3: Click button</title>
+    <script src='bower_components/webcomponentsjs/webcomponents.js'></script>
+    <link rel='import' href='bower_components/webduino/web-arduino.html'></link>
+    <link rel='import' href='bower_components/webduino/wa-led.html'></link>
+    <link rel='import' href='bower_components/webduino/wa-button.html'></link>
+</head>
+
+<body>
+    <h1>Example 3: Click button</h1>
+    <web-arduino id='board' ws='ws://192.168.43.76'>
+        <wa-button id='button' pin='4'></wa-button>
+        <wa-led id='red' pin='15' state='off'></wa-led>
+        <wa-led id='blue' pin='13' state='off'></wa-led>
+        <wa-led id='green' pin='12' state='off'></wa-led>
+    </web-arduino>
+    <button id='btn'>Click Me</button>
+</body>
+<script>
+    var board = document.getElementById('board');
+
+    board.on('ready', function() {
+        var button = document.getElementById('button'),
+            red = document.getElementById('red'),
+            btn = document.getElementById('btn');
+
+        button.on('released', function() {
+            red.toggle();
+        });
+
+        btn.addEventListener('click', function() {
+            red.toggle();
+        }, false);
+    });
+</script>
+
+</html>

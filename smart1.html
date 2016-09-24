@@ -1,0 +1,16 @@
+<html>
+
+<head>
+    <title>Example 1: GreenLED light up</title>
+    <script src='bower_components/webcomponentsjs/webcomponents.js'></script>
+    <link rel='import' href='bower_components/webduino/web-arduino.html'></link>
+    <link rel='import' href='bower_components/webduino/wa-led.html'></link>
+</head>
+
+<body>
+    <web-arduino id='board' ws='ws://192.168.43.76'>
+        <wa-led id='green' pin='15' state='on'></wa-led>
+    </web-arduino>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+<html>
+
+<head>
+    <title>Example 4: Photocell detect</title>
+    <script src='bower_components/webcomponentsjs/webcomponents.js'></script>
+    <link rel='import' href='bower_components/webduino/web-arduino.html'></link>
+    <link rel='import' href='bower_components/webduino/wa-photocell.html'></link>
+</head>
+
+<body>
+    <h1>Example 4: Photocell detect</h1>
+    <web-arduino id='board' ws='ws://192.168.43.76'>
+        <wa-photocell id='photocell' analogpin='0'></wa-photocell>
+    </web-arduino>
+    <h1>Value:<span id='msg'></span></h1>
+</body>
+
+<script>
+var board = document.getElementById('board');
+
+board.on('ready', function() {
+    var red = document.getElementById('red');
+    photocell.on(function(val) {
+        msg.innerHTML = val;
+    });
+});
+</script>
+
+</html>

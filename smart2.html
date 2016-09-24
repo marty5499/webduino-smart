@@ -1,0 +1,19 @@
+<html>
+
+<head>
+    <title>Example 2: LED Control</title>
+    <script src='bower_components/webcomponentsjs/webcomponents.js'></script>
+    <link rel='import' href='bower_components/webduino/web-arduino.html'></link>
+    <link rel='import' href='bower_components/webduino/wa-led.html'></link>
+</head>
+
+<body>
+	<h1>Example 2: LED Control</h1>
+    <web-arduino id='board' ws='ws://192.168.43.76'>
+        <wa-led id='red' pin='15' state='off'></wa-led>
+        <wa-led id='blue' pin='13' state='off'></wa-led>
+        <wa-led id='green' pin='12' state='on'></wa-led>
+    </web-arduino>
+</body>
+
+</html>

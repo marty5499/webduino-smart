@@ -16,12 +16,18 @@
         'url': '192.168.43.98'
     });
 
+    board.on(webduino.BoardEvent.STRING_MESSAGE,
+        function(event) {
+            var m = event.message;
+            console.log("STRING:", m);
+        });
+
     board.on(webduino.BoardEvent.READY, function() {
         console.log("Ready...");
-        led = new webduino.module.Led(board, board.getDigitalPin(12));
+        led = new webduino.module.Led(board, board.getDigitalPin(14));
         btn.addEventListener('click', function() {
-            led.blink(500);
-            buzzer = new Buzzer(board, board.getDigitalPin(14));
+            led.blink(100);
+            buzzer = new Buzzer(board, board.getDigitalPin(12));
             buzzer.play(buzzer_music([{
                 notes: "C7",
                 tempos: "8"
@@ -44,6 +50,7 @@
 
         });
     });
+
 
 
     function buzzer_music(m) {

@@ -11,11 +11,11 @@
 </head>
 
 <body>
-    <input id='str' type='text' style='font-size:2em' value="Webduino">
+    <input id='str' type='text' style='font-size:2em' value="Detect:">
     </input>
     <button id='btn' class='btn'>Send</button>
     <script>
-    var board,OLED;
+    var board, photoCell, OLED, lastVal;
 
     board = new webduino.Arduino({
         'transport': 'websocket',
@@ -25,9 +25,20 @@
     board.on(webduino.BoardEvent.READY, function() {
         console.log("Ready...");
         OLED = new SSD1306(board);
+        photocell = new webduino.module.Photocell(board, 0);
         btn.addEventListener('click', function() {
-            OLED.clear();
-            OLED.print(str.value);
+            photocell.on(function(val) {
+                var val = (Math.round(val * 100)) / 100;
+                if (lastVal == val) {
+                    return;
+                }
+                OLED.clear();
+                OLED.textSize = 2;
+                OLED.print(0, 0, str.value);
+                lastVal = val;
+                OLED.textSize = 4;
+                OLED.print(30, 30, "" + val);
+            });
         });
     });
 

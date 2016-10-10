@@ -1,30 +1,77 @@
 <html>
 
 <head>
-  <script src="../dist/webduino-base.js"></script>
-  <script src="../src/module/Buzzer.js"></script>
-  <script>
-  var board, buzzer,
-    Buzzer = webduino.module.Buzzer;
-
-  var notes = [
-      'E5', 'E5', 'REST', 'E5', 'REST', 'C5', 'E5', 'REST', 'G5'
-    ],
-    tempos = [
-      8, 8, 8, 8, 8, 8, 8, 8, 8
-    ];
-
-  board = new webduino.WebArduino('device_id');
-
-  board.on(webduino.BoardEvent.READY, function() {
-    buzzer = new Buzzer(board, board.getDigitalPin(11));
-    buzzer.play(notes, tempos);
-  });
-  </script>
+    <script src="bower_components/webduino-js/dist/webduino-all.js"></script>
+    <h1>Buzzer Example</h1>
 </head>
 
 <body>
-  <h1>Buzzer Example</h1>
+    <button id='btn' class='btn'>Play</button>
+    <script>
+    var board, buzzer, led,
+        Buzzer = webduino.module.Buzzer;
+
+    board = new webduino.Arduino({
+        'transport': 'websocket',
+        'url': '192.168.43.98'
+    });
+
+    board.on(webduino.BoardEvent.READY, function() {
+        console.log("Ready...");
+        led = new webduino.module.Led(board, board.getDigitalPin(12));
+        btn.addEventListener('click', function() {
+            led.blink(500);
+            buzzer = new Buzzer(board, board.getDigitalPin(14));
+            buzzer.play(buzzer_music([{
+                notes: "C7",
+                tempos: "8"
+            }, {
+                notes: "D7",
+                tempos: "8"
+            }, {
+                notes: "E7",
+                tempos: "8"
+            }]).notes, buzzer_music([{
+                notes: "C7",
+                tempos: "8"
+            }, {
+                notes: "D7",
+                tempos: "8"
+            }, {
+                notes: "E7",
+                tempos: "8"
+            }]).tempos);
+
+        });
+    });
+
+
+    function buzzer_music(m) {
+        var musicNotes = {};
+        musicNotes.notes = [];
+        musicNotes.tempos = [];
+        if (m[0].notes.length > 1) {
+            for (var i = 0; i < m.length; i++) {
+                if (Array.isArray(m[i].notes)) {
+                    var cn = musicNotes.notes.concat(m[i].notes);
+                    musicNotes.notes = cn;
+                } else {
+                    musicNotes.notes.push(m[i].notes);
+                }
+                if (Array.isArray(m[i].tempos)) {
+                    var ct = musicNotes.tempos.concat(m[i].tempos);
+                    musicNotes.tempos = ct;
+                } else {
+                    musicNotes.tempos.push(m[i].tempos);
+                }
+            }
+        } else {
+            musicNotes.notes = [m[0].notes];
+            musicNotes.tempos = [m[0].tempos];
+        }
+        return musicNotes;
+    }
+    </script>
 </body>
 
 </html>

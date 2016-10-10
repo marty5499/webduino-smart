@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Remote Controller</title>
+    <script src="bower_components/webduino-js/dist/webduino-all.js"></script>
+    <link rel=stylesheet href="remoteCtrl.css">
+</head>
+
+<body>
+    <div>
+        <div>
+            <div id="controller">
+                <div class="btn btn-power">○</div>
+                <div class="btn btn-show">顯示</div>
+                <div class="btn-group btn-menu-group">
+                    <div class="btn btn-color1"></div>
+                    <div class="btn btn-color2"></div>
+                    <div class="btn btn-color3"></div>
+                    <div class="btn btn-color4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    var rgbled;
+
+    function getElement(dom) {
+        var element = document.querySelector(dom);
+        return element;
+    }
+
+    function controllerBtnEvent(c, e, callback) {
+        if (e != "click") {
+            var _u = navigator.userAgent;
+            if (_u.indexOf("Android") > -1 || _u.indexOf("iPhone") > -1 || _u.indexOf("iPad") > -1) {
+                c.addEventListener(e[1], function() {
+                    callback();
+                });
+            } else {
+                c.addEventListener(e[0], function() {
+                    callback();
+                });
+            }
+        } else {
+            c.addEventListener("click", function() {
+                callback();
+            });
+        }
+    }
+    var board = new webduino.Arduino({
+        'transport': 'websocket',
+        'url': '192.168.43.98'
+    });
+    board.on('ready', function(board) {
+        board.systemReset();
+        board.samplingInterval = 250;
+        rgbled = new webduino.module.RGBLed(board,
+            board.getDigitalPin(15),
+            board.getDigitalPin(12),
+            board.getDigitalPin(13),
+            webduino.module.RGBLed.COMMON_CATHODE);
+        controllerBtnEvent(getElement(".btn-power"), "click", function() {
+            rgbled.setColor('#000000');
+            getElement(".btn-show").innerHTML = "Off";
+        });
+        controllerBtnEvent(getElement(".btn-color1"), "click", function() {
+            rgbled.setColor('#ff0000');
+            getElement(".btn-show").innerHTML = "Red";
+        });
+        controllerBtnEvent(getElement(".btn-color2"), "click", function() {
+            rgbled.setColor('#00ff00');
+            getElement(".btn-show").innerHTML = "Green";
+        });
+        controllerBtnEvent(getElement(".btn-color3"), "click", function() {
+            rgbled.setColor('#0000ff');
+            getElement(".btn-show").innerHTML = "Blue";
+        });
+        controllerBtnEvent(getElement(".btn-color4"), "click", function() {
+            rgbled.setColor('#ffff00');
+            getElement(".btn-show").innerHTML = "Yellow";
+        });
+    });
+    </script>
+</body>

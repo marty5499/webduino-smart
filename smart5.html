@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <title>Example 5: Click button</title>
+    <script src='bower_components/webcomponentsjs/webcomponents.js'></script>
+    <link rel='import' href='bower_components/webduino/web-arduino.html'></link>
+    <link rel='import' href='bower_components/webduino/wa-led.html'></link>
+    <link rel='import' href='bower_components/webduino/wa-button.html'></link>
+    <link rel='import' href='bower_components/webduino/wa-buzzer.html'></link>
+</head>
+
+<body>
+    <h1>Example 5: Click button</h1>
+    <web-arduino id='board' ws='192.168.8.200'>
+        <wa-button id='button' pin='4'></wa-button>
+        <wa-led id='red' pin='15' state='off'></wa-led>
+        <wa-led id='blue' pin='13' state='off'></wa-led>
+        <wa-led id='green' pin='12' state='off'></wa-led>
+        <wa-buzzer id='buzzer' pin='5'></wa-buzzer>
+    </web-arduino>
+    <button id='btn'>Click Me</button>
+</body>
+<script>
+var board = document.getElementById('board');
+
+board.on('ready', function() {
+    var button = document.getElementById('button'),
+        red = document.getElementById('red'),
+        btn = document.getElementById('btn'),
+        buzzer = document.getElementById('buzzer');
+
+    button.on('released', function() {
+        red.toggle();
+    });
+
+    btn.addEventListener('click', function() {
+        red.toggle();
+        console.log("play...");
+        buzzer.play(buzzer_music([{
+            notes: ["E7", "E7", "0", "E7", "0", "C7", "E7", "0", "G7", "0", "0", "0", "G6", "0", "0", "0", "C7", "0", "0", "G6", "0", "0", "E6", "0", "0", "A6", "0", "B6", "0", "AS6", "A6", "0", "G6", "E7", "0", "G7", "A7", "0", "F7", "G7", "0", "E7", "0", "C7", "D7", "B6", "0", "0", "C7", "0", "0", "G6", "0", "0", "E6", "0", "0", "A6", "0", "B6", "0", "AS6", "A6", "0", "G6", "E7", "0", "G7", "A7", "0", "F7", "G7", "0", "E7", "0", "C7", "D7", "B6", "0", "0"],
+            tempos: ["8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8"]
+        }]).notes, buzzer_music([{
+            notes: ["E7", "E7", "0", "E7", "0", "C7", "E7", "0", "G7", "0", "0", "0", "G6", "0", "0", "0", "C7", "0", "0", "G6", "0", "0", "E6", "0", "0", "A6", "0", "B6", "0", "AS6", "A6", "0", "G6", "E7", "0", "G7", "A7", "0", "F7", "G7", "0", "E7", "0", "C7", "D7", "B6", "0", "0", "C7", "0", "0", "G6", "0", "0", "E6", "0", "0", "A6", "0", "B6", "0", "AS6", "A6", "0", "G6", "E7", "0", "G7", "A7", "0", "F7", "G7", "0", "E7", "0", "C7", "D7", "B6", "0", "0"],
+            tempos: ["8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8"]
+        }]).tempos);
+        console.log("done.");
+    }, false);
+});
+
+
+
+function buzzer_music(m) {
+    var musicNotes = {};
+    musicNotes.notes = [];
+    musicNotes.tempos = [];
+    if (m[0].notes.length > 1) {
+        for (var i = 0; i < m.length; i++) {
+            if (Array.isArray(m[i].notes)) {
+                var cn = musicNotes.notes.concat(m[i].notes);
+                musicNotes.notes = cn;
+            } else {
+                musicNotes.notes.push(m[i].notes);
+            }
+            if (Array.isArray(m[i].tempos)) {
+                var ct = musicNotes.tempos.concat(m[i].tempos);
+                musicNotes.tempos = ct;
+            } else {
+                musicNotes.tempos.push(m[i].tempos);
+            }
+        }
+    } else {
+        musicNotes.notes = [m[0].notes];
+        musicNotes.tempos = [m[0].tempos];
+    }
+    return musicNotes;
+}
+</script>
+
+</html>

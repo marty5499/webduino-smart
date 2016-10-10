@@ -1,0 +1,121 @@
+html,body{
+  font-family:'Verdana';
+  background:#333;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+#controller{
+  position:relative;
+  box-sizing:border-box;
+  width:100%;
+  max-width:550px;
+  padding:20px 10px;
+  margin:0 auto;
+  overflow: hidden;
+  pointer-events: auto!important;
+}
+.btn{
+  position:relative;
+  display:inline-block;
+  width:calc(33% - 8px);
+  height:60px;
+  background:#555;
+  margin:3px 1px;
+  text-align:center;
+  line-height:60px;
+  border-radius:5px;
+  color:#fff;
+  font-size:22px;
+  vertical-align: middle;
+  cursor:pointer;
+}
+.btn:active{
+  background:#777;
+}
+@media (max-width:480px){
+  .btn{
+    height:50px;
+    line-height:50px;
+    font-size:20px;
+  }
+}
+@media (max-width:400px){
+  .btn{
+    height:45px;
+    line-height:45px;
+    font-size:18px;
+  }
+}
+.btn.btn-power{
+  background:#d00;
+  height:60px;
+  width:60px;
+  border-radius:50%;
+  margin-bottom:10px;
+}
+.btn.btn-power:active{
+  background:#f22;
+}
+.btn.btn-show{
+  background:#357;
+  width:calc(100% - 80px);
+  margin-left:5px;
+  color:#acf;
+  margin-bottom:10px;
+  cursor:default;
+}
+@media (max-width:480px){
+  .btn.btn-power{
+    height:50px;
+    width:50px;
+  }
+  .btn.btn-show{
+    width:calc(100% - 70px);
+    margin-left:5px;
+    overflow:hidden;
+  }
+}
+@media (max-width:400px){
+  .btn.btn-power{
+    height:45px;
+    width:45px;
+  }
+  .btn.btn-show{
+    width:calc(100% - 60px);
+    margin-left:3px;
+  }
+}
+.btn-group{
+  width:100%;
+  text-align:center;
+}
+.btn-group.btn-menu-group .btn{
+  width:calc(25% - 10px);
+  margin:5px 2px;
+}
+.btn-group.btn-menu-group .btn-color1{
+  background:#d00;
+}
+.btn-group.btn-menu-group .btn-color1:active{
+  background:#f22;
+}
+.btn-group.btn-menu-group .btn-color2{
+  background:#0a0;
+}
+.btn-group.btn-menu-group .btn-color2:active{
+  background:#2d2;
+}
+.btn-group.btn-menu-group .btn-color3{
+  background:#09c;
+}
+.btn-group.btn-menu-group .btn-color3:active{
+  background:#3bf;
+}
+.btn-group.btn-menu-group .btn-color4{
+  background:#fb0;
+}
+.btn-group.btn-menu-group .btn-color4:active{
+  background:#ff8;
+}

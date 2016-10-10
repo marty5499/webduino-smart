@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <title>(JS) RGB Selector</title>
+    <script src="bower_components/webduino-js/dist/webduino-all.js"></script>
+    <style>
+    #area {
+        margin-top: 10px;
+        width: 120px;
+        height: 120px;
+        background: #ccc;
+        pointer-events: auto!important;
+    }
+    </style>
+</head>
+
+<body>
+    <h1>RGB Selector</h1>
+    <input id="color" type="color">
+    <div id="area"></div>
+</body>
+<script>
+var board = new webduino.Arduino({
+    'transport': 'websocket',
+    'url': '192.168.43.145'
+});
+board.on('ready', function() {
+    board.systemReset();
+    board.samplingInterval = 250;
+    rgbled = new webduino.module.RGBLed(board,
+        board.getDigitalPin(15),
+        board.getDigitalPin(12),
+        board.getDigitalPin(13),
+        webduino.module.RGBLed.COMMON_CATHODE
+    );
+    rgbled.setColor(0, 0, 0);
+    rgbled.setColor('#000000');
+    document.getElementById("area").style.background = '#000000';
+    document.getElementById("color").oninput = function(_color) {
+        _color = this.value;
+        document.getElementById("area").style.background = _color;
+        rgbled.setColor(_color);
+    };
+});
+</script>
+
+</html>

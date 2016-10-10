@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Webduino Blockly Demo 01</title>
+    <script src="bower_components/webduino-js/dist/webduino-all.min.js"></script>
+    <style>
+    #show {
+        font-size: 60px;
+        pointer-events: auto!important;
+    }
+    </style>
+</head>
+
+<body>
+    <span id="show">value</span>
+    <script>
+    var photocell;
+    var board = new webduino.Arduino({
+        'transport': 'websocket',
+        'url': '192.168.43.98'
+    });
+    board.on('ready', function(board) {
+        board.systemReset();
+        board.samplingInterval = 250;
+        photocell = new webduino.module.Photocell(board, 0);
+        photocell.on(function(val) {
+            photocell.detectedVal = val;
+            document.getElementById("show").innerHTML = (Math.round((photocell.detectedVal) * 100)) / 100;
+        });
+    });
+    </script>
+</body>

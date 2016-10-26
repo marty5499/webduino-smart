@@ -37,6 +37,10 @@
         board.send([0xF0, 0x04, 0x01, 0x01, 0xF7]);
     }
 
+    proto.drawImage = function(){
+        board.send([0xF0, 0x04, 0x01, 0x05, 0xF7]);   
+    }
+
     proto.print = function(cursorX, cursorY, str) {
         var len = arguments.length;
         if (len == 3) {

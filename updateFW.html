@@ -18,7 +18,7 @@
 
     board = new webduino.Arduino({
         'transport': 'websocket',
-        'url': 'ws://192.168.43.98'
+        'url': 'ws://10.10.3.24'
     });
 
     board.on(webduino.BoardEvent.READY, function() {
@@ -27,7 +27,7 @@
 
         light.addEventListener('click', function() {
             var cmd = [0xF0, 0x0E, 0x09];
-            var url = "http://192.168.43.17:3000/test.bin";
+            var url = "http://webduino.tw/smart/default.bin";
             for (i = 0; i < url.length; i++) {
                 cmd.push(url.charCodeAt(i));
             }

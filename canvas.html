@@ -21,10 +21,10 @@
     <input id='range' type='range' min="0" max="255" value="200">
     <button id='btn' class='btn'>Show</button>
     <script>
-    var imgFile = "w.png";
+    var imgFile = "mopcon.png";
     var ctx = document.getElementById('canvas');
 
-    var board, photoCell, OLED, lastVal;
+    var board, OLED, lastVal;
     var bytes = new Array();
     var imgData;
     var imgHexData = "";
@@ -37,11 +37,8 @@
     board.on(webduino.BoardEvent.READY, function() {
         console.log("Ready...");
         OLED = new SSD1306(board);
-        photocell = new webduino.module.Photocell(board, 0);
         btn.addEventListener('click', function() {
-            OLED.save(imgHexData);
-            OLED.clear();
-            OLED.render();
+            render();
         });
     });
 
@@ -70,6 +67,21 @@
         paint();
     });
 
+    function render() {
+        console.log("render...");
+        OLED.save(imgHexData);
+        OLED.clear();
+        OLED.render();
+    }
+
+    function print(size, x, y, text) {
+        ctx.font = size + 'pt Calibri';
+        ctx.fillStyle = 'white';
+        ctx.fillText(text, x, y + size);
+        updateCanvas();
+        render();
+    }
+
     function paint() {
         if (canvas.getContext) {
             ctx = canvas.getContext('2d');
@@ -85,8 +97,8 @@
                 ctx.font = '31pt Calibri';
                 ctx.fillStyle = 'white';
                 ctx.fillText('林玉玲', 3, 50);
-                updateCanvas();
                 */
+                updateCanvas();
             };
         }
     }

@@ -9,6 +9,10 @@
     var _cursorX = 0;
     var _cursorY = 0;
     var sendLength = 32;
+    var sendArray = [];
+    var sending = false;
+    var sendAck = '';
+    var sendCallback;
 
     function SSD1306(board) {
         this._board = board;
@@ -17,6 +21,12 @@
         board.send([0xF0, 0x04, 0x01, 0x02, _cursorX, _cursorY, 0xF7]);
         board.send([0xF0, 0x04, 0x01, 0x03, _textSize, 0xF7]);
         board.send([0xF0, 0x04, 0x01, 0x01, 0xF7]);
+        board.on(webduino.BoardEvent.SYSEX_MESSAGE,
+            function(event) {
+                var m = event.message;
+                sending = false;
+                sendTrigger();
+            });
     }
 
     SSD1306.prototype = proto = Object.create(Object.prototype, {
@@ -46,7 +56,8 @@
         board.send([0xF0, 0x04, 0x01, 0x06, 0xF7]);
     }
 
-    proto.save = function(data) {
+    proto.save = function(data, callback) {
+        sendCallback = callback;
         for (var i = 0; i < data.length; i = i + sendLength) {
             var chunk = data.substring(i, i + sendLength);
             saveChunk(i / 2, chunk);
@@ -63,6 +74,9 @@
             raw.push(n.charCodeAt(i));
         }
         raw.push(0xf7);
+        //board.send(raw);
+        sendArray.push({ 'obj': raw, 'ack': 0x0A });
+        raw = [];
         // send Data //  
         CMD = [0xf0, 0x04, 0x01, 0x0B];
         raw = raw.concat(CMD);
@@ -70,7 +84,23 @@
             raw.push(data.charCodeAt(i));
         }
         raw.push(0xf7);
-        board.send(raw);
+        //board.send(raw);
+        sendArray.push({ 'obj': raw, 'ack': 0x0B });
+        sendTrigger();
+    }
+
+    function sendTrigger() {
+        if (sending) {
+            return;
+        }
+        if (sendArray.length == 0) {
+            sendCallback();
+            return;
+        }
+        sending = true;
+        var sendObj = sendArray.shift();
+        sendAck = sendObj.ack;
+        board.send(sendObj.obj);
     }
 
     proto.print = function(cursorX, cursorY, str) {

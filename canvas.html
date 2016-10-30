@@ -5,7 +5,7 @@
     <script src="SSD1306.js"></script>
     <style>
     .btn {
-        font-size: 2em;
+        font-size: 1em;
     }
     
     canvas {
@@ -14,14 +14,15 @@
     </style>
 </head>
 
-<body onload="paint();">
+<body onload="init();">
     <canvas id="canvas" width="128" height="64"></canvas>
     <br>
     <div id='msg'>200</div>
     <input id='range' type='range' min="0" max="255" value="200">
     <button id='btn' class='btn'>Show</button>
     <script>
-    var imgFile = "mopcon.png";
+    var imgFile = "car.gif";
+    var img1 = new Image();
     var ctx = document.getElementById('canvas');
 
     var board, OLED, lastVal;
@@ -68,10 +69,10 @@
     });
 
     function render() {
-        console.log("render...");
-        OLED.save(imgHexData);
         OLED.clear();
-        OLED.render();
+        OLED.save(imgHexData, function() {
+            OLED.render();
+        });
     }
 
     function print(size, x, y, text) {
@@ -89,17 +90,8 @@
             ctx.clear = function() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
             };
-            var img1 = new Image();
-            img1.src = imgFile;
-            img1.onload = function() {
-                ctx.drawImage(img1, 0, 0);
-                /*
-                ctx.font = '31pt Calibri';
-                ctx.fillStyle = 'white';
-                ctx.fillText('林玉玲', 3, 50);
-                */
-                updateCanvas();
-            };
+            ctx.drawImage(img1, 0, 0);
+            updateCanvas();
         }
     }
 
@@ -134,6 +126,60 @@
         }
 
     }
+
+
+
+    function init() {
+        document.onpaste = function(e) {
+            ctx.clear();
+            var IMAGE_MIME_REGEX = /^image\/(p?jpeg|gif|png)$/i;
+            var items = e.clipboardData.items;
+
+            var loadImage = function(file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    img1.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            };
+
+            for (var i = 0; i < items.length; i++) {
+                if (IMAGE_MIME_REGEX.test(items[i].type)) {
+                    loadImage(items[i].getAsFile());
+                    return;
+                }
+            }
+            // Normal paste handling here
+        }
+        img1.onload = function() {
+            ctx.drawImage(img1, 0, 0);
+            updateCanvas();
+        };
+        img1.src = imgFile;
+        paint();
+    }
+
+
+    function go() {
+        var i = 255;
+        var loopId = setInterval(function() {
+            i -= 5;
+            range.value = i;
+            paint();
+            OLED.save(imgHexData, function() {
+                OLED.render();
+                if (i == 155) {
+                    clearInterval(loopId);
+                }
+            });
+        }, 1500);
+    }
+
+    /*
+    ctx.font = '31pt Calibri';
+    ctx.fillStyle = 'white';
+    ctx.fillText('林玉玲', 3, 50);
+    */
     </script>
 </body>
 

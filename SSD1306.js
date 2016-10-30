@@ -23,6 +23,7 @@
         board.send([0xF0, 0x04, 0x01, 0x01, 0xF7]);
         board.on(webduino.BoardEvent.SYSEX_MESSAGE,
             function(event) {
+                console.log("board send done.");
                 var m = event.message;
                 sending = false;
                 sendTrigger();
@@ -100,6 +101,7 @@
         sending = true;
         var sendObj = sendArray.shift();
         sendAck = sendObj.ack;
+        console.log("board send:",sendObj.obj);
         board.send(sendObj.obj);
     }
 

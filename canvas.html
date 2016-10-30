@@ -69,9 +69,11 @@
     });
 
     function render() {
+        console.log("render...");
         OLED.clear();
         OLED.save(imgHexData, function() {
             OLED.render();
+        console.log("done.");
         });
     }
 
@@ -175,6 +177,9 @@
         }, 1500);
     }
 
+    function toString(){
+        console.log(imgHexData);
+    }
     /*
     ctx.font = '31pt Calibri';
     ctx.fillStyle = 'white';

@@ -8,7 +8,7 @@
     var _textSize = 2;
     var _cursorX = 0;
     var _cursorY = 0;
-    var sendLength = 64;
+    var sendLength = 50;
     var sendArray = [];
     var sending = false;
     var sendAck = '';
@@ -24,7 +24,7 @@
         board.on(webduino.BoardEvent.SYSEX_MESSAGE,
             function(event) {
                 var m = event.message;
-                console.log("send ok", m);
+                console.log("send ok");
                 sending = false;
             });
         startQueue();
@@ -76,9 +76,9 @@
             raw.push(n.charCodeAt(i));
         }
         raw.push(0xf7);
-        sendArray.push({ 'obj': raw, 'ack': 0x0A });
+        //sendArray.push({ 'obj': raw, 'ack': 0x0A });
 
-        raw = [];
+        //raw = [];
         // send Data //  
         CMD = [0xf0, 0x04, 0x01, 0x0B];
         raw = raw.concat(CMD);
@@ -100,9 +100,9 @@
             sendAck = sendObj.ack;
             if (sendAck > 0) {
                 board.send(sendObj.obj);
-                console.log("send ", sendObj.obj, sendArray.length);
             } else {
                 console.log("send done.");
+                sending = false;
                 sendCallback();
             }
         }, 0);

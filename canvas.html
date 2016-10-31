@@ -21,7 +21,6 @@
     <input id='range' type='range' min="0" max="255" value="100">
     <button id='btn' class='btn'>Show</button>
     <script>
-    var imgFile = "car.gif";
     var img1 = new Image();
     var ctx = document.getElementById('canvas');
 
@@ -30,6 +29,7 @@
     var imgData;
     var imgHexData = "";
     var imgBitData = "";
+    var imgFile = "car.gif";
 
     board = new webduino.Arduino({
         'transport': 'websocket',
@@ -70,12 +70,12 @@
 
     function render() {
         OLED.clear();
-        console.log("render...");
+        console.log("render...",imgHexData);
         OLED.save(imgHexData, function() {
             OLED.render();
             console.log("render done.");
             //console.log(imgHexData);
-            console.log(imgBitData);
+            //console.log(imgBitData);
         });
     }
 
@@ -161,6 +161,7 @@
             // Normal paste handling here
         }
         img1.onload = function() {
+            console.log("img onload.");
             ctx.drawImage(img1, 0, 0);
             updateCanvas();
         };
@@ -170,18 +171,19 @@
 
 
     function go() {
-        var i = 255;
+        OLED.clear();
+        var i = 250;
         var loopId = setInterval(function() {
-            i -= 5;
+            i -= 10;
             range.value = i;
             paint();
             OLED.save(imgHexData, function() {
                 OLED.render();
-                if (i == 155) {
+                if (i == 100) {
                     clearInterval(loopId);
                 }
             });
-        }, 1500);
+        }, 500);
     }
 
 

@@ -29,6 +29,7 @@
     var bytes = new Array();
     var imgData;
     var imgHexData = "";
+    var imgBitData = "";
 
     board = new webduino.Arduino({
         'transport': 'websocket',
@@ -62,7 +63,6 @@
             console.log("STRING:", m);
         });
 
-
     range.addEventListener('change', function(e) {
         msg.innerHTML = range.value;
         paint();
@@ -73,7 +73,9 @@
         console.log("render...");
         OLED.save(imgHexData, function() {
             OLED.render();
-            console.log("done.");
+            console.log("render done.");
+            //console.log(imgHexData);
+            console.log(imgBitData);
         });
     }
 
@@ -99,6 +101,7 @@
 
     function updateCanvas() {
         imgHexData = "";
+        imgBitData = "";
         var x = 0,
             y = 0,
             imgByte;
@@ -118,6 +121,11 @@
         }
         ctx.putImageData(imgData, 0, 0);
         for (i = 0; i < bytes.length; i = i + 8) {
+            if (i % 128 == 0) {
+                imgBitData += "\r\n";
+            }
+            imgBitData = '' + imgBitData + bytes[i + 0] + bytes[i + 1] + bytes[i + 2] + bytes[i + 3] + bytes[i + 4] + bytes[i + 5] + bytes[i + 6] + bytes[i + 7];
+
             var x =
                 bytes[i + 0] << 7 | bytes[i + 1] << 6 |
                 bytes[i + 2] << 5 | bytes[i + 3] << 4 |
@@ -126,9 +134,8 @@
             if (x <= 15) imgHexData += "0";
             imgHexData = imgHexData + x.toString(16);
         }
-
+        //toString();
     }
-
 
 
     function init() {
@@ -177,7 +184,9 @@
         }, 1500);
     }
 
+
     function toString() {
+        console.log("imgHexData", imgHexData.length);
         console.log(imgHexData);
     }
     /*

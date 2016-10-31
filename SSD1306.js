@@ -24,13 +24,10 @@
         board.on(webduino.BoardEvent.SYSEX_MESSAGE,
             function(event) {
                 var m = event.message;
+                console.log("send ok", m);
                 sending = false;
-                if (m[0] == 4 && m[1] == 1 && m[2] == sendAck) {
-                    console.log("send done. trigger...");
-                    sendAck = 0;
-                    sendTrigger();
-                }
             });
+        startQueue();
     }
 
     SSD1306.prototype = proto = Object.create(Object.prototype, {
@@ -66,6 +63,7 @@
             var chunk = data.substring(i, i + sendLength);
             saveChunk(i / 2, chunk);
         }
+        sendArray.push({ 'obj': {}, 'ack': 0 });
     }
 
     function saveChunk(startPos, data) {
@@ -78,9 +76,8 @@
             raw.push(n.charCodeAt(i));
         }
         raw.push(0xf7);
-        //board.send(raw);
         sendArray.push({ 'obj': raw, 'ack': 0x0A });
-        sendTrigger();
+
         raw = [];
         // send Data //  
         CMD = [0xf0, 0x04, 0x01, 0x0B];
@@ -89,23 +86,26 @@
             raw.push(data.charCodeAt(i));
         }
         raw.push(0xf7);
-        //board.send(raw);
         sendArray.push({ 'obj': raw, 'ack': 0x0B });
-        sendTrigger();
     }
 
-    function sendTrigger() {
-        if (sending) {
-            return;
-        }
-        if (sendArray.length == 0) {
-            sendCallback();
-            return;
-        }
-        sending = true;
-        var sendObj = sendArray.shift();
-        sendAck = sendObj.ack;
-        board.send(sendObj.obj);
+
+    function startQueue() {
+        setInterval(function() {
+            if (sending || sendArray.length == 0) {
+                return;
+            }
+            sending = true;
+            var sendObj = sendArray.shift();
+            sendAck = sendObj.ack;
+            if (sendAck > 0) {
+                board.send(sendObj.obj);
+                console.log("send ", sendObj.obj, sendArray.length);
+            } else {
+                console.log("send done.");
+                sendCallback();
+            }
+        }, 0);
     }
 
     proto.print = function(cursorX, cursorY, str) {
